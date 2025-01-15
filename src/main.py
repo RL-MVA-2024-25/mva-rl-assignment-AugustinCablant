@@ -1,9 +1,9 @@
 import random
 import os
-from pathlib import Path
 import numpy as np
 import torch
-
+from env_hiv import HIVPatient
+from gymnasium.wrappers import TimeLimit
 from evaluate import evaluate_HIV, evaluate_HIV_population
 from train import ProjectAgent  # Replace DummyAgent with your agent implementation
 
@@ -20,14 +20,16 @@ def seed_everything(seed: int = 42):
 
 
 if __name__ == "__main__":
-    file = Path("score.txt")
-    if not file.is_file():
-        seed_everything(seed=42)
-        # Initialization of the agent. Replace DummyAgent with your custom agent implementation.
-        agent = ProjectAgent()
-        agent.load()
-        # Evaluate agent and write score.
-        score_agent: float = evaluate_HIV(agent=agent, nb_episode=5)
-        score_agent_dr: float = evaluate_HIV_population(agent=agent, nb_episode=20)
-        with open(file="score.txt", mode="w") as f:
-            f.write(f"{score_agent}\n{score_agent_dr}")
+    seed_everything(seed=42)
+    # Initialization of the agent. Replace DummyAgent with your custom agent implementation.
+    env = TimeLimit(
+                env = HIVPatient(domain_randomization=False),
+                max_episode_steps = 200
+                )  
+    agent = ProjectAgent()  # env = env, name = 'DQN'
+    agent.load()
+    # Keep the following lines to evaluate your agent unchanged.
+    score_agent: float = evaluate_HIV(agent=agent, nb_episode=1)
+    score_agent_dr: float = evaluate_HIV_population(agent=agent, nb_episode=15)
+    with open(file="score.txt", mode="w") as f:
+        f.write(f"{score_agent}\n{score_agent_dr}")

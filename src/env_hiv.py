@@ -13,13 +13,13 @@ class HIVPatient(gym.Env):
     def __init__(
         self, clipping=True, logscale=False, domain_randomization: bool = False
     ):
-        super(HIVPatient, self).__init__()
+        super(HIVPatient, self).__init__()    # Hérite de la classe gym.Env
 
         self.domain_randomization = domain_randomization
-        self.action_space = gym.spaces.Discrete(4)
+        self.action_space = gym.spaces.Discrete(4)    # 4 types d'actions possibles : pas de médicaments, médicaments 1, médicaments 2, médicaments 1 et 2
         self.observation_space = gym.spaces.Box(
             shape=(6,), low=-np.inf, high=np.inf, dtype=np.float32
-        )
+        )    # Vecteur qui représente l'état du patient (T1, T1star, T2, T2star, V, E)
 
         self.T1 = 163573.0  # healthy type 1 cells concentration (cells per mL)
         self.T1star = 11945.0  # infected type 1 cells concentration (cells per mL)
